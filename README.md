@@ -241,10 +241,11 @@ Structured JSON Response
 | 4 | Basic Code Analysis Service | ✅ |
 | 5 | Rule-Based Code Review Engine | ✅ |
 | 6 | Modular Rule Engine | ✅ |
-| 7 | AI Integration (Gemini) | ⏳ |
-| 8 | File Upload Support | ⏳ |
-| 9 | Retrieval-Augmented Generation (RAG) | ⏳ |
-| 10 | Deployment | ⏳ |
+| 7 | Advanced Modular Rule Engine | ✅ |
+| 8 | AI Integration (Gemini) | ⏳ |
+| 9 | File Upload Support | ⏳ |
+| 10 | RAG Integration | ⏳ |
+| 11 | Deployment | ⏳ |
 >>>>>>> cfe35ce (Updated readme)
 
 ---
@@ -282,14 +283,14 @@ Structured JSON Response
 
 # 🚀 Roadmap
 
-### Rule Engine
+Current Rule Engine detects:
 
-- Detect empty files
-- Detect long functions
-- Detect nested loops
-- Detect duplicate code
-- Detect missing docstrings
-- Detect unused variables
+- TODO comments ✅
+- Debug print statements ✅
+- Hardcoded passwords ✅
+- Hardcoded API keys/secrets ✅
+- Empty code submissions ✅
+- Long lines ✅
 
 ### AI Features
 
