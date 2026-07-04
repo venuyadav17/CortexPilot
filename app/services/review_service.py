@@ -6,7 +6,7 @@ from app.review_rules.python_rules import (
     check_long_lines,
     check_api_key
 )
-
+from app.utils.report_generator import generate_report
 
 def analyze_code(code: str, language: str):
 
@@ -35,17 +35,23 @@ def analyze_code(code: str, language: str):
     )
 
 
-    return {
-        "language": language,
+    summary = {
 
-        "summary": {
-            "total_lines": len(lines),
-            "blank_lines": sum(
-                1 for line in lines
-                if line.strip() == ""
-            ),
-            "characters": len(code)
-        },
+    "language": language,
 
-        "issues": issues
+    "total_lines": len(lines),
+
+    "blank_lines": sum(
+        1 for line in lines
+        if line.strip()==""
+    ),
+
+    "characters": len(code)
+
     }
+
+
+    return generate_report(
+        summary,
+        issues
+    )
