@@ -7,6 +7,7 @@ from app.review_rules.python_rules import (
     check_api_key
 )
 from app.utils.report_generator import generate_report
+from app.services.ai_service import get_ai_review
 
 def analyze_code(code: str, language: str):
 
@@ -51,7 +52,19 @@ def analyze_code(code: str, language: str):
     }
 
 
-    return generate_report(
-        summary,
+    report = generate_report(
+    summary,
+    issues
+    )
+
+
+    ai_feedback = get_ai_review(
+        code,
         issues
     )
+
+
+    report["ai_review"] = ai_feedback
+
+
+    return report
