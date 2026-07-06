@@ -8,35 +8,44 @@
 
 ## 🚀 Overview
 
-CortexPilot is a production-oriented AI-assisted Code Review Platform that combines a deterministic rule-based analysis engine with Large Language Model (LLM) reasoning.
+CortexPilot is a production-oriented AI-assisted Code Review Platform that combines deterministic static analysis with Large Language Model (LLM) reasoning.
 
-Unlike a basic AI chatbot that directly sends code to an AI model, CortexPilot first analyzes code using its own static review engine. The detected issues are then passed to Gemini AI to generate deeper explanations, improvement suggestions, and best practices.
+Unlike a basic chatbot that directly sends code to an AI model, CortexPilot follows a hybrid approach:
 
-This hybrid approach improves reliability, reduces unnecessary AI dependency, and follows real-world software engineering practices.
+1. Analyze source code using a custom rule-based engine.
+2. Detect quality, security, and maintainability issues.
+3. Generate a structured review report.
+4. Enhance findings using Gemini AI.
+5. Store review history for future access.
+
+This architecture improves reliability, reduces complete AI dependency, and follows real-world backend engineering principles.
 
 ---
 
-## 🎯 Project Objectives
+# 🎯 Project Objectives
 
-- Build a scalable FastAPI backend architecture
-- Perform rule-based static code analysis
-- Detect code quality and security issues
-- Generate code quality scores
-- Integrate Gemini AI for intelligent review explanations
-- Provide structured JSON API responses
-- Build a production-ready AI engineering project
+- Build a scalable AI-powered backend system
+- Create a modular FastAPI architecture
+- Perform automated static code analysis
+- Detect coding mistakes and security issues
+- Generate structured code review reports
+- Integrate Gemini AI for intelligent suggestions
+- Store and retrieve previous reviews
+- Follow production-style software design practices
 
 ---
 
 # ✨ Current Features
 
-## Backend
+
+## Backend System
 
 - FastAPI REST API
-- Clean layered architecture
-- Modular service design
-- Swagger API documentation
-- Environment-based configuration
+- Modular folder structure
+- Layered service architecture
+- Request validation using Pydantic
+- Interactive Swagger documentation
+
 
 ---
 
@@ -46,24 +55,34 @@ CortexPilot currently detects:
 
 - TODO comments
 - Debug print statements
-- Possible hardcoded passwords
+- Hardcoded passwords
 - Hardcoded API keys/secrets
 - Empty code submissions
 - Long lines (>80 characters)
 
+
 ---
 
-## Review Report System
+## Review Report Generator
 
-Generates:
+Automatically generates:
 
 - Code quality score
-- Review status:
-  - Good
-  - Needs Improvement
-  - Poor
-- Total issue count
+- Review status
+
+Status categories:
+
+- Good
+- Needs Improvement
+- Poor
+
+
+Includes:
+
+- Total detected issues
+- Code summary
 - Severity-based evaluation
+
 
 Severity levels:
 
@@ -71,104 +90,202 @@ Severity levels:
 - Warning
 - Critical
 
----
-
-## AI Review System
-
-Powered by Gemini AI:
-
-- Explains detected issues
-- Provides security recommendations
-- Suggests improvements
-- Gives coding best practices
-- Generates developer-friendly feedback
 
 ---
 
-# 🏗 Architecture
+## Gemini AI Review
+
+Gemini AI enhances static analysis by providing:
+
+- Explanation of detected problems
+- Security impact analysis
+- Code improvement suggestions
+- Recommended fixes
+- Best practices
+
+
+---
+
+## Review History System
+
+CortexPilot stores previous reviews with:
+
+- Timestamp
+- Review status
+- Quality score
+- Detected issues
+- Gemini AI explanation
+
+
+Available API:
+
+```http
+GET /history
+```
+
+Returns stored review history.
+
+---
+
+# 🏗 System Architecture
+
 
 ```text
-                 Client
 
-                   │
-                   ▼
+                 Developer
 
-              FastAPI API
+                     │
 
-                   │
-                   ▼
+                     ▼
 
-          Pydantic Validation
+              FastAPI Backend
 
-                   │
-                   ▼
+                     │
 
-            Review Service
+                     ▼
 
-                   │
+            Request Validation
 
-        ┌──────────┴──────────┐
+                (Pydantic)
 
-        ▼                     ▼
+                     │
 
-   Rule Engine            AI Service
+                     ▼
 
-        │                     │
+              Review Service
 
-        ▼                     ▼
 
- Python Rules            Gemini AI
+        ┌────────────┼────────────┐
 
-        │                     │
 
-        └──────────┬──────────┘
+        ▼                         ▼
 
-                   ▼
 
-           Report Generator
+ Rule-Based Engine            AI Service
 
-                   │
-                   ▼
 
-        Structured JSON Response
+        │                         │
+
+
+        ▼                         ▼
+
+
+ Python Rules              Gemini AI Model
+
+
+        │                         │
+
+
+        └────────────┬────────────┘
+
+
+                     ▼
+
+
+             Report Generator
+
+
+                     │
+
+
+                     ▼
+
+
+              History Service
+
+
+                     │
+
+
+                     ▼
+
+
+          Structured JSON Response
+
 ```
 
 ---
 
 # 📂 Project Structure
 
+
 ```text
+
 CortexPilot/
 
+│
+
 ├── app/
-│
+
+│   │
+
 │   ├── routes/
+
+│   │      ├── review.py
+
+│   │      └── history.py
+
 │   │
-│   ├── schemas/
-│   │
+
 │   ├── services/
+
 │   │      ├── review_service.py
-│   │      └── ai_service.py
+
+│   │      ├── ai_service.py
+
+│   │      └── history_service.py
+
 │   │
+
+│   ├── schemas/
+
+│   │      └── review_schema.py
+
+│   │
+
 │   ├── review_rules/
+
 │   │      └── python_rules.py
+
 │   │
+
 │   ├── utils/
+
 │   │      └── report_generator.py
+
 │   │
+
 │   ├── models/
+
 │   │
+
 │   ├── config.py
+
+│   │
+
 │   └── main.py
+
 │
+
+
+├── storage/
+
+│      └── history.json
+
+│
+
 ├── requirements.txt
+
 ├── README.md
+
 └── .gitignore
+
 ```
 
 ---
 
 # 🛠 Tech Stack
+
 
 ## Backend
 
@@ -176,161 +293,210 @@ CortexPilot/
 - FastAPI
 - Uvicorn
 
+
 ## AI
 
 - Google Gemini AI
 - Google GenAI SDK
 
+
 ## Validation
 
 - Pydantic
 
+
+## Storage
+
+- JSON File Storage  
+(Current)
+
+Future:
+
+- PostgreSQL
+
+
 ## Configuration
 
-- python-dotenv
 - Environment Variables
+- python-dotenv
+
 
 ## Version Control
 
 - Git
 - GitHub
 
+
 ---
 
 # 📈 Development Progress
+
 
 | Session | Feature | Status |
 |---|---|---|
 | 1 | FastAPI Setup | ✅ |
 | 2 | Professional Project Structure | ✅ |
 | 3 | POST Review API | ✅ |
-| 4 | Basic Code Analysis Service | ✅ |
+| 4 | Basic Analysis Service | ✅ |
 | 5 | Rule-Based Review Engine | ✅ |
 | 6 | Modular Rule System | ✅ |
 | 7 | Advanced Review Rules | ✅ |
 | 8 | Report Generator + Quality Score | ✅ |
 | 9 | Gemini AI Integration | ✅ |
-| 10 | Review History System | ⏳ |
+| 10 | Review History System | ✅ |
 | 11 | File Upload Support | ⏳ |
 | 12 | Retrieval-Augmented Generation (RAG) | ⏳ |
-| 13 | Deployment | ⏳ |
+| 13 | Authentication | ⏳ |
+| 14 | Frontend Integration | ⏳ |
+| 15 | Deployment | ⏳ |
+
 
 ---
 
 # 🔄 Current Workflow
 
+
 ```text
 
 Developer submits code
 
-          │
 
-          ▼
+          ↓
 
-FastAPI receives request
 
-          │
+POST /review API
 
-          ▼
 
-Validate request data
+          ↓
 
-          │
 
-          ▼
+Validate request
 
-Execute static rules
 
-          │
+          ↓
 
-          ▼
 
-Generate issue report
+Run static rules
 
-          │
 
-          ▼
+          ↓
+
+
+Detect issues
+
+
+          ↓
+
 
 Calculate quality score
 
-          │
 
-          ▼
+          ↓
 
-Send context to Gemini
 
-          │
+Generate report
 
-          ▼
+
+          ↓
+
+
+Send findings to Gemini
+
+
+          ↓
+
 
 Generate AI explanation
 
-          │
 
-          ▼
+          ↓
 
-Return final review
+
+Save review history
+
+
+          ↓
+
+
+Return final response
 
 ```
 
 ---
 
-# 🔍 Example Response
+# 🔍 Example API Response
+
 
 ```json
+
 {
-  "status": "Needs Improvement",
+    "status": "Good",
 
-  "score": 60,
+    "score": 95,
 
-  "total_issues": 3,
+    "total_issues": 1,
 
-  "issues": [
-    {
-      "rule": "HARDCODED_SECRET",
-      "severity": "Critical",
-      "message": "Possible secret detected.",
-      "suggestion": "Move secrets into environment variables."
-    }
-  ],
 
-  "ai_review":
-  "The code contains a security risk because secrets should not be stored directly inside source files..."
+    "issues": [
+
+        {
+
+            "rule": "DEBUG_PRINT",
+
+            "severity": "Info",
+
+            "message": "Debug print statement found"
+
+        }
+
+    ],
+
+
+    "ai_review":
+
+    "The print statement should be replaced with logging in production applications."
+
 }
+
 ```
 
 ---
 
 # 🚀 Future Enhancements
 
-## Code Review
 
-- Detect unused imports
-- Detect duplicate code
-- Detect complex functions
-- Detect security vulnerabilities
+## Code Intelligence
+
+- Unused import detection
+- Duplicate code detection
+- Complexity analysis
+- Security vulnerability detection
+
 
 ## AI Improvements
 
 - Better prompt engineering
-- AI-generated fixes
-- Code rewriting suggestions
-- Multiple AI provider support
+- AI generated fixes
+- Code optimization suggestions
+- Multi-model support
+
 
 ## Platform Features
 
-- Review history storage
+- Upload source files
+- Analyze complete projects
 - User authentication
-- Multi-file analysis
-- Repository upload
 - Dashboard
+- Review analytics
+
 
 ## Production
 
+- Database migration
 - Docker support
 - CI/CD pipeline
 - Cloud deployment
-- Monitoring and logging
+
 
 ---
 
@@ -340,4 +506,9 @@ Return final review
 
 B.Tech Computer Science & Engineering
 
-Building CortexPilot to explore Backend Engineering, AI Integration, and Production Software Architecture.
+Building CortexPilot step by step to learn:
+
+- Backend Engineering
+- AI Integration
+- System Design
+- Production Software Architecture

@@ -1,0 +1,25 @@
+[
+    {
+        "timestamp": "2026-07-06T19:41:01.056047",
+        "review": {
+            "status": "Good",
+            "score": 95,
+            "total_issues": 1,
+            "summary": {
+                "language": "python",
+                "total_lines": 1,
+                "blank_lines": 0,
+                "characters": 14
+            },
+            "issues": [
+                {
+                    "rule": "DEBUG_PRINT",
+                    "severity": "Info",
+                    "message": "Debug print statement found.",
+                    "suggestion": "Remove debug statements before production."
+                }
+            ],
+            "ai_review": "Okay, let's break down this simple but important issue.\n\n---\n\n### Code Review: `print('hello')`\n\n**1. Explanation of Problems**\n\nThe static analyzer correctly identified `print('hello')` as a \"debug print statement.\"\n*   **What it is:** A `print()` statement directly writes text to the standard output (usually your console or terminal).\n*   **The problem:** While perfectly fine for quick checks during development or small scripts, using `print()` for any kind of logging or output in a larger application, especially in production, is generally a bad practice. It lacks control and structure.\n\n**2. Why They Matter**\n\n*   **Cluttered Logs:** In a production system, `print()` statements will mix with actual system logs, making it very hard to find real errors or important information. Imagine hundreds of \"hello\" messages obscuring an `ERROR` message.\n*   **Unintended Output:** If your application is running as a background service or part of a larger system, its standard output might not be monitored or might even break other scripts expecting specific output. Users or other systems might see unexpected messages.\n*   **Performance Overhead:** While minimal for a single print, many `print()` calls can add up and slightly impact performance, especially if they're in a loop.\n*   **Security/Information Leakage:** Debug prints might accidentally expose sensitive internal information (e.g., database queries, user data, configuration details) if they're not removed before deployment.\n*   **Lack of Control:** You can't easily filter, format, redirect, or disable `print()` statements based on severity (e.g., show only errors, not info) without modifying the code itself.\n\n**3. Recommended Fixes**\n\n*   **1. Remove it (if truly temporary debugging):**\n    If `print('hello')` was just a quick check to see if a line of code was reached, simply delete the line.\n\n    ```python\n    # Original (bad)\n    # print('hello')\n\n    # Fix: Remove it if not needed\n    ```\n\n*   **2. Replace with proper logging (if you need to record the message):**\n    If you need to convey information, warnings, or errors, use Python's built-in `logging` module. This gives you immense control.\n\n    ```python\n    import logging\n\n    # Configure basic logging (usually done once at the start of your application)\n    # This will print INFO messages and above to the console by default\n    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')\n\n    # Instead of print('hello'), use logging.info()\n    logging.info('Application started successfully.')\n\n    # Example of other log levels:\n    # logging.debug('This is a debug message - won\\'t show with INFO level')\n    # logging.warning('Something unusual happened.')\n    # logging.error('An error occurred!')\n    ```\n\n**4. Best Practices**\n\n*   **Always use the `logging` module:** For any message you intend to see in production (informational, warnings, errors), use Python's `logging` module.\n*   **Utilize logging levels:** Use `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL` levels appropriately. This allows you to configure your system to show different amounts of detail based on the environment (e.g., `DEBUG` in dev, `INFO` or `WARNING` in production).\n*   **Configure log handlers:** Direct your logs to files, external services (like Splunk, ELK stack), or specific streams, rather than just relying on the default console output.\n*   **Avoid `print()` in production code:** The only exception might be very specific command-line utilities *designed* solely to output information directly to the user's console.\n*   **Review your logs:** Make logging a habit, and actively review the generated logs to monitor your application's health and troubleshoot issues."
+        }
+    }
+]

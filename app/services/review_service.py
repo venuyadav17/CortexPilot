@@ -8,6 +8,7 @@ from app.review_rules.python_rules import (
 )
 from app.utils.report_generator import generate_report
 from app.services.ai_service import get_ai_review
+from app.services.history_service import save_review
 
 def analyze_code(code: str, language: str):
 
@@ -66,5 +67,6 @@ def analyze_code(code: str, language: str):
 
     report["ai_review"] = ai_feedback
 
+    save_review(report)
 
     return report

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.routes.review import router as review_router
+from app.routes.history import router as history_router
 
 app = FastAPI(
     title="CortexPilot",
@@ -9,6 +10,7 @@ app = FastAPI(
 
 
 app.include_router(review_router)
+app.include_router(history_router)
 
 
 @app.get("/")
