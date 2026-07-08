@@ -1,0 +1,21 @@
+Python Coding Standards
+
+
+1. Avoid print statements in production code.
+Use the logging module instead.
+
+
+2. Never hardcode API keys, passwords, or tokens.
+Store secrets using environment variables.
+
+
+3. Remove TODO comments before production release.
+
+
+4. Keep code lines shorter than 80 characters.
+
+
+5. Functions should be small and focused.
+
+
+6. Add proper error handling for external API calls.

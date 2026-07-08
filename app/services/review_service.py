@@ -9,6 +9,8 @@ from app.review_rules.python_rules import (
 from app.utils.report_generator import generate_report
 from app.services.ai_service import get_ai_review
 from app.services.history_service import save_review
+from app.services.retriever_service import retrieve_context
+
 
 def analyze_code(code: str, language: str):
 
@@ -59,9 +61,15 @@ def analyze_code(code: str, language: str):
     )
 
 
+    context = retrieve_context(
+    issues
+)
+
+
     ai_feedback = get_ai_review(
         code,
-        issues
+        issues,
+        context
     )
 
 

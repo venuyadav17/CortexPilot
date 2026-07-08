@@ -12,7 +12,11 @@ client = genai.Client(
 )
 
 
-def get_ai_review(code, issues):
+def get_ai_review(
+        code,
+        issues,
+        context
+):
 
     prompt = f"""
 
@@ -26,6 +30,10 @@ Review this code:
 Our static analyzer found these issues:
 
 {issues}
+
+Company coding guidelines:
+
+{context}
 
 
 Provide:

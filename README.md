@@ -127,6 +127,18 @@ Returns stored review history.
 
 ---
 
+## Retrieval-Augmented Generation (RAG)
+
+CortexPilot uses a retrieval layer to improve AI responses.
+
+Current RAG features:
+
+- Custom knowledge base
+- Coding standard retrieval
+- Context injection into Gemini
+- More reliable AI explanations
+- Modular retriever service
+
 # 🏗 System Architecture
 
 
@@ -345,7 +357,7 @@ Future:
 | 9 | Gemini AI Integration | ✅ |
 | 10 | Review History System | ✅ |
 | 11 | File Upload Support | ✅ |
-| 12 | Retrieval-Augmented Generation (RAG) | ⏳ |
+| 12 | Retrieval-Augmented Generation (RAG) | ✅ |
 | 13 | Authentication | ⏳ |
 | 14 | Frontend Integration | ⏳ |
 | 15 | Deployment | ⏳ |
