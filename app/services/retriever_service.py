@@ -1,44 +1,35 @@
 def retrieve_context(issues):
 
-
     with open(
         "knowledge_base/coding_rules.txt",
         "r"
     ) as file:
 
-
-        knowledge = file.read()
-
+        content = file.read()
 
 
-    matched_context = []
+    sections = content.split("[")
+
+    matched_rules = []
 
 
     for issue in issues:
 
-
-        rule = issue.get(
-            "rule",
-            ""
-        )
+        rule_name = issue.get("rule")
 
 
-        if rule in knowledge:
+        for section in sections:
+
+            if section.startswith(rule_name):
+
+                matched_rules.append(
+                    "[" + section.strip()
+                )
 
 
-            matched_context.append(
-                knowledge
-            )
+    if matched_rules:
+
+        return "\n\n".join(matched_rules)
 
 
-
-    if matched_context:
-
-
-        return "\n".join(
-            matched_context
-        )
-
-
-
-    return knowledge
+    return "No additional coding guidelines found."

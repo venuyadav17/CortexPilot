@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+
 from app.routes.review import router as review_router
 from app.routes.history import router as history_router
 from app.routes.upload import router as upload_router
 
+from database.database import create_table
 
 app = FastAPI(
     title="CortexPilot",
@@ -10,6 +12,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Create the SQLite table when the application starts
+create_table()
 
 app.include_router(review_router)
 app.include_router(history_router)

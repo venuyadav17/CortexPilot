@@ -1,6 +1,8 @@
 import json
-from datetime import datetime
 
+from database.database import get_connection
+
+from datetime import datetime
 
 HISTORY_FILE = "storage/history.json"
 
@@ -8,53 +10,65 @@ HISTORY_FILE = "storage/history.json"
 
 def save_review(report):
 
+    connection = get_connection()
 
-    with open(
-        HISTORY_FILE,
-        "r"
-    ) as file:
+    cursor = connection.cursor()
 
-        history = json.load(file)
+    cursor.execute(
 
+        """
 
+        INSERT INTO reviews
 
-    review_record = {
+        (timestamp, status, score, review)
 
-        "timestamp": datetime.now().isoformat(),
+        VALUES (?, ?, ?, ?)
 
-        "review": report
+        """,
 
-    }
+        (
 
+            datetime.now().isoformat(),
 
+            report["status"],
 
-    history.append(
-        review_record
+            report["score"],
+
+            json.dumps(report)
+
+        )
+
     )
 
+    connection.commit()
 
-
-    with open(
-        HISTORY_FILE,
-        "w"
-    ) as file:
-
-        json.dump(
-            history,
-            file,
-            indent=4
-        )
-        
+    connection.close()
+    
+    
 def get_history():
 
+    connection = get_connection()
 
-    with open(
-        HISTORY_FILE,
-        "r"
-    ) as file:
+    cursor = connection.cursor()
 
+    cursor.execute(
 
-        history = json.load(file)
+        "SELECT review FROM reviews ORDER BY id DESC"
 
+    )
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+    history = []
+
+    for row in rows:
+
+        history.append(
+
+            json.loads(row[0])
+
+        )
 
     return history

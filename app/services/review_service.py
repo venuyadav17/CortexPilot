@@ -10,7 +10,7 @@ from app.utils.report_generator import generate_report
 from app.services.ai_service import get_ai_review
 from app.services.history_service import save_review
 from app.services.retriever_service import retrieve_context
-
+from app.services.summary_service import generate_summary
 
 def analyze_code(code: str, language: str):
 
@@ -59,6 +59,10 @@ def analyze_code(code: str, language: str):
     summary,
     issues
     )
+    
+    quick_summary = generate_summary(
+        report["issues"]
+    )
 
 
     context = retrieve_context(
@@ -76,5 +80,7 @@ def analyze_code(code: str, language: str):
     report["ai_review"] = ai_feedback
 
     save_review(report)
+    
+    report["quick_summary"] = quick_summary
 
     return report
