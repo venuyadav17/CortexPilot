@@ -4,6 +4,7 @@ from database.database import get_connection
 
 from datetime import datetime
 
+
 HISTORY_FILE = "storage/history.json"
 
 
@@ -45,17 +46,19 @@ def save_review(report):
     connection.close()
     
     
+
+
 def get_history():
 
     connection = get_connection()
 
     cursor = connection.cursor()
 
-    cursor.execute(
-
-        "SELECT review FROM reviews ORDER BY id DESC"
-
-    )
+    cursor.execute("""
+        SELECT timestamp, review
+        FROM reviews
+        ORDER BY id DESC
+    """)
 
     rows = cursor.fetchall()
 
@@ -65,10 +68,9 @@ def get_history():
 
     for row in rows:
 
-        history.append(
-
-            json.loads(row[0])
-
-        )
+        history.append({
+            "timestamp": row[0],
+            "review": json.loads(row[1])
+        })
 
     return history
