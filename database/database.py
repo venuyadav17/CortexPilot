@@ -9,10 +9,12 @@ def get_connection():
 
 
 def create_table():
+
     connection = get_connection()
 
     cursor = connection.cursor()
 
+    # Reviews Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS reviews (
 
@@ -29,5 +31,21 @@ def create_table():
         )
     """)
 
+    # Users Table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            username TEXT NOT NULL,
+
+            email TEXT UNIQUE NOT NULL,
+
+            password TEXT NOT NULL
+
+        )
+    """)
+
     connection.commit()
+
     connection.close()
