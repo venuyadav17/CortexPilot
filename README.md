@@ -1,14 +1,14 @@
 # CortexPilot
 
 <p align="center">
-  <b>Hybrid AI-Assisted Code Review Platform built with FastAPI</b>
+  <b>Hybrid AI-Powered Code Review Platform built with FastAPI, SQLAlchemy & PostgreSQL</b>
 </p>
 
 ---
 
 # 🚀 Overview
 
-CortexPilot is a production-oriented AI-assisted Code Review Platform that combines deterministic static code analysis with Large Language Model (LLM) reasoning.
+CortexPilot is a production-oriented AI-powered Code Review Platform that combines deterministic static code analysis with Large Language Model (LLM) reasoning.
 
 Unlike traditional AI code reviewers that directly send code to an LLM, CortexPilot follows a hybrid architecture:
 
@@ -17,7 +17,8 @@ Unlike traditional AI code reviewers that directly send code to an LLM, CortexPi
 3. Generate a structured review report.
 4. Retrieve relevant coding standards using Retrieval-Augmented Generation (RAG).
 5. Enhance findings using Gemini AI.
-6. Store review history in a SQLite database.
+6. Store review history securely in PostgreSQL.
+7. Provide dashboard analytics and export capabilities.
 
 This architecture improves reliability, reduces AI hallucinations, and follows production-grade backend engineering practices.
 
@@ -32,7 +33,8 @@ This architecture improves reliability, reduces AI hallucinations, and follows p
 - Generate structured review reports
 - Integrate Gemini AI for intelligent explanations
 - Implement Retrieval-Augmented Generation (RAG)
-- Store review history in a database
+- Secure APIs using JWT Authentication
+- Store review history in PostgreSQL
 - Follow production software engineering principles
 
 ---
@@ -42,9 +44,9 @@ This architecture improves reliability, reduces AI hallucinations, and follows p
 ## Backend
 
 - FastAPI REST API
-- Modular folder structure
-- Layered service architecture
-- Request validation using Pydantic
+- Modular Architecture
+- Layered Service Design
+- Request Validation using Pydantic
 - Interactive Swagger Documentation
 
 ---
@@ -53,24 +55,50 @@ This architecture improves reliability, reduces AI hallucinations, and follows p
 
 Currently CortexPilot detects:
 
-- TODO comments
-- Debug print statements
-- Hardcoded passwords
-- Hardcoded API keys / secrets
-- Empty code submissions
-- Long lines (>80 characters)
+- TODO Comments
+- Debug Print Statements
+- Hardcoded Passwords
+- Hardcoded API Keys / Secrets
+- Empty Code Submissions
+- Long Lines (>80 Characters)
+
+---
+
+## AI Code Review
+
+Gemini AI provides:
+
+- Problem Explanation
+- Security Impact
+- Recommended Fixes
+- Best Practices
+- Production-Level Suggestions
+
+---
+
+## Retrieval-Augmented Generation (RAG)
+
+Instead of sending the complete knowledge base to Gemini, CortexPilot retrieves only relevant coding standards.
+
+Features:
+
+- Custom Knowledge Base
+- Rule-to-Context Mapping
+- Context Injection
+- Smart Retrieval
+- Modular Retriever Service
 
 ---
 
 ## Review Report Generator
 
-Automatically generates:
+Automatically Generates:
 
 - Code Quality Score
 - Review Status
+- Severity Classification
 - Total Issues
 - Code Summary
-- Severity Classification
 
 Status:
 
@@ -78,7 +106,7 @@ Status:
 - Needs Improvement
 - Poor
 
-Severity Levels:
+Severity:
 
 - Info
 - Warning
@@ -88,7 +116,7 @@ Severity Levels:
 
 ## Quick Summary Generator
 
-Every review includes a concise summary before the detailed AI explanation.
+Every review starts with a concise issue summary.
 
 Example:
 
@@ -96,41 +124,52 @@ Example:
 - Debug Print detected
 - TODO Comment found
 
-This allows developers to understand major issues instantly.
+Developers can immediately understand the major problems before reading the detailed AI explanation.
 
 ---
 
-## Gemini AI Review
+## Authentication
 
-Gemini AI provides:
-
-- Explanation of detected issues
-- Security impact analysis
-- Recommended fixes
-- Best coding practices
-- Production-ready suggestions
+- User Registration
+- User Login
+- Password Hashing (bcrypt)
+- JWT Authentication
+- Protected APIs
 
 ---
 
-## Smart Retrieval-Augmented Generation (RAG)
+## Dashboard Analytics
 
-Instead of sending the complete knowledge base to Gemini, CortexPilot retrieves only the relevant coding standards based on detected issues.
+Provides:
 
-Current RAG Features:
-
-- Custom Knowledge Base
-- Rule-to-Context Mapping
-- Context Injection into Gemini
-- Relevant Guideline Retrieval
-- Modular Retriever Service
+- Total Reviews
+- Average Score
+- Best Score
+- Lowest Score
+- Good Reviews
+- Needs Improvement Reviews
+- Poor Reviews
+- Issue Statistics
+- Severity Statistics
+- Review History
+- Recent Reviews
 
 ---
 
-## File Upload Support
+## Export
 
-Developers can upload source files directly for analysis.
+Developers can export review history as:
 
-Available API:
+- CSV
+- PDF
+
+---
+
+## File Upload
+
+Supports source code upload.
+
+API:
 
 ```http
 POST /upload
@@ -140,16 +179,16 @@ POST /upload
 
 ## Review History
 
-Every review is stored with:
+Stores:
 
 - Timestamp
-- Review Status
 - Quality Score
+- Review Status
 - Quick Summary
-- Detailed Issues
+- Issues
 - AI Review
 
-Available API:
+API:
 
 ```http
 GET /history
@@ -157,130 +196,85 @@ GET /history
 
 ---
 
-## SQLite Database Storage
+## Database
 
-Review history is now stored inside a SQLite database instead of JSON files.
+Powered by:
+
+- PostgreSQL
+- SQLAlchemy ORM
 
 Benefits:
 
-- Faster retrieval
-- Better scalability
-- Easier migration to PostgreSQL
-- Production-oriented persistence
+- Better Scalability
+- Production Ready
+- Secure Data Storage
+- Faster Querying
+- ORM-Based Architecture
 
 ---
 
 # 🏗 System Architecture
 
 ```text
-                  Developer
+                 Developer
 
-                      │
+                     │
 
-                      ▼
+                     ▼
 
-               FastAPI Backend
+              FastAPI Backend
 
-                      │
+                     │
 
-                      ▼
+                     ▼
 
-             Request Validation
-                 (Pydantic)
+            Request Validation
+               (Pydantic)
 
-                      │
+                     │
 
-                      ▼
+                     ▼
 
-              Review Service
+             Review Service
 
-       ┌──────────────┼──────────────┐
-       │              │              │
-       ▼              ▼              ▼
+      ┌─────────────┼─────────────┐
+      │             │             │
 
- Rule Engine     Retriever      AI Service
-                     │              │
-                     ▼              ▼
-            Knowledge Base     Gemini AI
+      ▼             ▼             ▼
 
-       └──────────────┼──────────────┘
-                      ▼
+ Rule Engine    Retriever     AI Service
 
-            Report Generator
+                    │             │
 
-                      │
+                    ▼             ▼
 
-                      ▼
+           Knowledge Base    Gemini AI
 
-          Quick Summary Generator
+      └─────────────┼─────────────┘
 
-                      │
+                    ▼
 
-                      ▼
+          Report Generator
 
-            History Service
+                    ▼
 
-                      │
+       Quick Summary Generator
 
-                      ▼
+                    ▼
 
-             SQLite Database
+          History Service
 
-                      │
+                    ▼
 
-                      ▼
+          SQLAlchemy ORM
 
-         Structured JSON Response
-```
+                    ▼
 
----
+            PostgreSQL Database
 
-# 📂 Project Structure
+                    ▼
 
-```text
-CortexPilot/
-
-│
-
-├── app/
-
-│   ├── routes/
-│   │      ├── review.py
-│   │      ├── upload.py
-│   │      └── history.py
-│   │
-│   ├── services/
-│   │      ├── review_service.py
-│   │      ├── ai_service.py
-│   │      ├── retriever_service.py
-│   │      ├── history_service.py
-│   │      └── summary_service.py
-│   │
-│   ├── schemas/
-│   │      └── review_schema.py
-│   │
-│   ├── review_rules/
-│   │      └── python_rules.py
-│   │
-│   ├── utils/
-│   │      └── report_generator.py
-│   │
-│   ├── models/
-│   │
-│   ├── config.py
-│   │
-│   └── main.py
-│
-├── database/
-│      ├── database.py
-│      └── reviews.db
-│
-├── knowledge_base/
-│      └── coding_rules.txt
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+        Structured JSON Response
 ```
 
 ---
@@ -298,22 +292,29 @@ CortexPilot/
 - Google Gemini
 - Google GenAI SDK
 
+## Database
+
+- PostgreSQL
+- SQLAlchemy ORM
+
+## Authentication
+
+- JWT
+- Passlib
+- bcrypt
+
 ## Validation
 
 - Pydantic
 
-## Database
+## Environment
 
-- SQLite
-
-Future:
-
-- PostgreSQL
-
-## Configuration
-
-- Environment Variables
 - python-dotenv
+
+## Export
+
+- Pandas
+- ReportLab
 
 ## Version Control
 
@@ -325,26 +326,29 @@ Future:
 # 📈 Development Progress
 
 | Session | Feature | Status |
-|---------|---------|--------|
+|----------|---------|--------|
 | 1 | FastAPI Setup | ✅ |
-| 2 | Professional Project Structure | ✅ |
-| 3 | POST Review API | ✅ |
-| 4 | Basic Analysis Service | ✅ |
-| 5 | Rule-Based Review Engine | ✅ |
-| 6 | Modular Rule System | ✅ |
-| 7 | Advanced Review Rules | ✅ |
-| 8 | Report Generator + Quality Score | ✅ |
-| 9 | Gemini AI Integration | ✅ |
+| 2 | Project Structure | ✅ |
+| 3 | Review API | ✅ |
+| 4 | Static Analysis | ✅ |
+| 5 | Rule Engine | ✅ |
+| 6 | Report Generator | ✅ |
+| 7 | Advanced Rules | ✅ |
+| 8 | Quality Score | ✅ |
+| 9 | Gemini AI | ✅ |
 | 10 | Review History | ✅ |
-| 11 | File Upload Support | ✅ |
-| 12 | Retrieval-Augmented Generation (RAG) | ✅ |
-| 13 | Smart RAG Retrieval | ✅ |
-| 14 | Quick Summary Generator | ✅ |
-| 15 | SQLite Database Integration | ✅ |
-| 16 | JWT Authentication | ⏳ |
-| 17 | Frontend (React) | ⏳ |
-| 18 | Docker | ⏳ |
-| 19 | Cloud Deployment | ⏳ |
+| 11 | File Upload | ✅ |
+| 12 | RAG Integration | ✅ |
+| 13 | Quick Summary | ✅ |
+| 14 | JWT Authentication | ✅ |
+| 15 | Dashboard Analytics | ✅ |
+| 16 | PDF & CSV Export | ✅ |
+| 17 | PostgreSQL Integration | ✅ |
+| 18 | SQLAlchemy Migration | ✅ |
+| 19 | Docker | ⏳ |
+| 20 | Render Deployment | ⏳ |
+| 21 | React Frontend | ⏳ |
+| 22 | Vercel Deployment | ⏳ |
 
 ---
 
@@ -352,32 +356,65 @@ Future:
 
 ```text
 Developer submits code
+
         │
+
         ▼
+
 POST /review
+
         │
+
         ▼
+
 Request Validation
+
         │
+
         ▼
+
 Rule-Based Analysis
+
         │
+
         ▼
-Generate Quality Report
+
+Generate Report
+
         │
+
         ▼
+
 Generate Quick Summary
+
         │
+
         ▼
-Retrieve Relevant Coding Rules
+
+Retrieve Coding Standards (RAG)
+
         │
+
         ▼
+
 Gemini AI Review
+
         │
+
         ▼
-Store Review in SQLite
+
+Store in PostgreSQL
+
         │
+
         ▼
+
+Dashboard / Export
+
+        │
+
+        ▼
+
 Return Structured JSON Response
 ```
 
@@ -394,11 +431,6 @@ Return Structured JSON Response
       "severity": "Critical",
       "title": "Hardcoded Secret",
       "summary": "Move secrets into environment variables."
-    },
-    {
-      "severity": "Info",
-      "title": "Debug Print",
-      "summary": "Remove debug statements before production."
     }
   ],
   "issues": [],
@@ -408,37 +440,17 @@ Return Structured JSON Response
 
 ---
 
-# 🚀 Future Enhancements
+# 🚀 Upcoming Features
 
-## Static Analysis
-
-- Unused Import Detection
-- Duplicate Code Detection
-- Complexity Analysis
-- Dead Code Detection
-- Security Vulnerability Detection
-
-## AI
-
-- AI-generated Code Fixes
-- Better Prompt Engineering
-- Multi-model Support
-- Project-level Review
-
-## Platform
-
-- User Authentication (JWT)
-- Dashboard
-- User-specific Review History
-- Team Collaboration
-
-## Production
-
-- PostgreSQL
-- Docker
-- CI/CD
-- Cloud Deployment
+- Docker Support
+- Cloud Deployment (Render)
+- React Dashboard
+- Vercel Deployment
+- CI/CD Pipeline
 - Monitoring & Logging
+- Team Collaboration
+- Multi-language Code Analysis
+- AI Generated Code Fixes
 
 ---
 
@@ -454,5 +466,6 @@ Building CortexPilot to learn:
 - AI Integration
 - Retrieval-Augmented Generation (RAG)
 - System Design
+- SQLAlchemy & PostgreSQL
 - Production Software Architecture
--doo
+- Cloud Deployment
