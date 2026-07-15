@@ -4,7 +4,8 @@ from app.routes.review import router as review_router
 from app.routes.history import router as history_router
 from app.routes.upload import router as upload_router
 from app.routes.auth import router as auth_router
-
+from app.routes.dashboard import router as dashboard_router
+from app.routes.export import router as export_router
 
 from database.database import create_table
 
@@ -21,6 +22,8 @@ app.include_router(review_router)
 app.include_router(history_router)
 app.include_router(upload_router)
 app.include_router(auth_router)
+app.include_router(dashboard_router)
+app.include_router(export_router)
 
 
 @app.get("/")

@@ -1,20 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.services.history_service import get_history
+from app.services.auth_service import get_current_user
 
-
-router = APIRouter()
+router = APIRouter(
+    tags=["History"]
+)
 
 
 @router.get("/history")
-def review_history():
+def history(
+    current_user: str = Depends(get_current_user)
+):
 
-
-    history = get_history()
-
+    reviews = get_history(current_user)
 
     return {
-        "total_reviews": len(history),
-
-        "reviews": history
+        "total_reviews": len(reviews),
+        "reviews": reviews
     }

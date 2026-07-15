@@ -1,64 +1,62 @@
 import json
 
 from database.database import get_connection
-
-from datetime import datetime
-
-
-HISTORY_FILE = "storage/history.json"
+from app.services.user_service import get_user_by_email
 
 
+def save_review(email, report):
 
-def save_review(report):
+    user = get_user_by_email(email)
+
+    if user is None:
+        return
+
+    user_id = user[0]
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
-
         """
-
         INSERT INTO reviews
+        (user_id, timestamp, status, score, review)
 
-        (timestamp, status, score, review)
-
-        VALUES (?, ?, ?, ?)
-
+        VALUES (?, ?, ?, ?, ?)
         """,
-
         (
-
-            datetime.now().isoformat(),
-
+            user_id,
+            report["timestamp"],
             report["status"],
-
             report["score"],
-
             json.dumps(report)
-
         )
-
     )
 
     connection.commit()
-
     connection.close()
-    
-    
 
 
-def get_history():
+def get_history(email):
+
+    user = get_user_by_email(email)
+
+    if user is None:
+        return []
+
+    user_id = user[0]
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT timestamp, review
         FROM reviews
+        WHERE user_id=?
         ORDER BY id DESC
-    """)
+        """,
+        (user_id,)
+    )
 
     rows = cursor.fetchall()
 
@@ -68,9 +66,11 @@ def get_history():
 
     for row in rows:
 
-        history.append({
-            "timestamp": row[0],
-            "review": json.loads(row[1])
-        })
+        history.append(
+            {
+                "timestamp": row[0],
+                "review": json.loads(row[1])
+            }
+        )
 
     return history

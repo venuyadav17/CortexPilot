@@ -16,17 +16,21 @@ def create_table():
 
     # Reviews Table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS reviews (
+    CREATE TABLE IF NOT EXISTS reviews(
 
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            timestamp TEXT,
+        user_id INTEGER,
 
-            status TEXT,
+        timestamp TEXT,
 
-            score INTEGER,
+        status TEXT,
 
-            review TEXT
+        score INTEGER,
+
+        review TEXT,
+
+        FOREIGN KEY(user_id) REFERENCES users(id)
 
         )
     """)

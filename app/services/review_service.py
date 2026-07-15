@@ -1,3 +1,4 @@
+from datetime import datetime
 from app.review_rules.python_rules import (
     check_todo,
     check_print,
@@ -12,8 +13,8 @@ from app.services.history_service import save_review
 from app.services.retriever_service import retrieve_context
 from app.services.summary_service import generate_summary
 
-def analyze_code(code: str, language: str):
-
+def analyze_code(language, code, current_user):
+    
     lines = code.splitlines()
 
     issues = []
@@ -78,8 +79,10 @@ def analyze_code(code: str, language: str):
 
 
     report["ai_review"] = ai_feedback
+    
+    report["timestamp"] = datetime.now().isoformat()
 
-    save_review(report)
+    save_review(current_user, report)
     
     report["quick_summary"] = quick_summary
 

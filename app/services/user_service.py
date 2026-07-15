@@ -1,8 +1,8 @@
 from database.database import get_connection
 from app.services.security_service import hash_password
-
 from app.services.security_service import verify_password
 from app.services.jwt_service import create_access_token
+
 
 def register_user(username, email, password):
 
@@ -38,7 +38,8 @@ def register_user(username, email, password):
 
     finally:
         connection.close()
-        
+
+
 def login_user(email, password):
 
     connection = get_connection()
@@ -83,8 +84,27 @@ def login_user(email, password):
     )
 
     return {
-
         "access_token": token,
-
         "token_type": "bearer"
     }
+
+
+def get_user_by_email(email):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, username, email
+        FROM users
+        WHERE email=?
+        """,
+        (email,)
+    )
+
+    user = cursor.fetchone()
+
+    connection.close()
+
+    return user
