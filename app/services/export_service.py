@@ -2,7 +2,11 @@ import json
 import pandas as pd
 
 from reportlab.platypus import SimpleDocTemplate, Table
-from database.database import get_connection
+from sqlalchemy.orm import Session
+
+from database.session import SessionLocal
+from database.models import Review
+
 from app.services.user_service import get_user_by_email
 
 
@@ -13,43 +17,42 @@ def export_csv(email):
     if user is None:
         return None
 
-    user_id = user[0]
+    db: Session = SessionLocal()
 
-    connection = get_connection()
+    try:
 
-    cursor = connection.cursor()
+        rows = (
+            db.query(Review)
+            .filter(
+                Review.user_id == user.id
+            )
+            .order_by(
+                Review.id.desc()
+            )
+            .all()
+        )
 
-    cursor.execute(
-        """
-        SELECT review
-        FROM reviews
-        WHERE user_id=?
-        ORDER BY id DESC
-        """,
-        (user_id,)
-    )
+        data = []
 
-    rows = cursor.fetchall()
+        for row in rows:
 
-    connection.close()
+            review = json.loads(row.review)
 
-    data = []
+            data.append({
 
-    for row in rows:
+                "Timestamp": review["timestamp"],
 
-        review = json.loads(row[0])
+                "Status": review["status"],
 
-        data.append({
+                "Score": review["score"],
 
-            "Timestamp": review["timestamp"],
+                "Issues": len(review["issues"])
 
-            "Status": review["status"],
+            })
 
-            "Score": review["score"],
+    finally:
 
-            "Issues": len(review["issues"])
-
-        })
+        db.close()
 
     df = pd.DataFrame(data)
 
@@ -67,61 +70,60 @@ def export_pdf(email):
     if user is None:
         return None
 
-    user_id = user[0]
+    db: Session = SessionLocal()
 
-    connection = get_connection()
+    try:
 
-    cursor = connection.cursor()
+        rows = (
+            db.query(Review)
+            .filter(
+                Review.user_id == user.id
+            )
+            .order_by(
+                Review.id.desc()
+            )
+            .all()
+        )
 
-    cursor.execute(
-        """
-        SELECT review
-        FROM reviews
-        WHERE user_id=?
-        ORDER BY id DESC
-        """,
-        (user_id,)
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    table_data = [
-
-        [
-
-            "Timestamp",
-
-            "Status",
-
-            "Score",
-
-            "Issues"
-
-        ]
-
-    ]
-
-    for row in rows:
-
-        review = json.loads(row[0])
-
-        table_data.append(
+        table_data = [
 
             [
 
-                review["timestamp"],
+                "Timestamp",
 
-                review["status"],
+                "Status",
 
-                review["score"],
+                "Score",
 
-                len(review["issues"])
+                "Issues"
 
             ]
 
-        )
+        ]
+
+        for row in rows:
+
+            review = json.loads(row.review)
+
+            table_data.append(
+
+                [
+
+                    review["timestamp"],
+
+                    review["status"],
+
+                    review["score"],
+
+                    len(review["issues"])
+
+                ]
+
+            )
+
+    finally:
+
+        db.close()
 
     filepath = "exports/review_report.pdf"
 

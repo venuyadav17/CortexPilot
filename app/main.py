@@ -7,16 +7,17 @@ from app.routes.auth import router as auth_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.export import router as export_router
 
-from database.database import create_table
+from database.session import engine
+from database.models import Base
+
+# Create PostgreSQL tables automatically
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="CortexPilot",
     description="AI-powered Code Review Copilot",
     version="1.0.0"
 )
-
-# Create the SQLite table when the application starts
-create_table()
 
 app.include_router(review_router)
 app.include_router(history_router)

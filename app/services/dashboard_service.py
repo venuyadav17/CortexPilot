@@ -1,6 +1,10 @@
 import json
 
-from database.database import get_connection
+from sqlalchemy.orm import Session
+
+from database.session import SessionLocal
+from database.models import Review
+
 from app.services.user_service import get_user_by_email
 
 
@@ -11,26 +15,29 @@ def get_dashboard(email):
     if user is None:
         return {}
 
-    user_id = user[0]
+    db: Session = SessionLocal()
 
-    connection = get_connection()
-    cursor = connection.cursor()
+    try:
 
-    cursor.execute(
-        """
-        SELECT review
-        FROM reviews
-        WHERE user_id=?
-        ORDER BY id
-        """,
-        (user_id,)
-    )
+        review_rows = (
+            db.query(Review)
+            .filter(
+                Review.user_id == user.id
+            )
+            .order_by(
+                Review.id
+            )
+            .all()
+        )
 
-    rows = cursor.fetchall()
+        reviews = [
+            json.loads(row.review)
+            for row in review_rows
+        ]
 
-    connection.close()
+    finally:
 
-    reviews = [json.loads(row[0]) for row in rows]
+        db.close()
 
     total_reviews = len(reviews)
 
@@ -66,7 +73,10 @@ def get_dashboard(email):
         2
     )
 
-    scores = [review["score"] for review in reviews]
+    scores = [
+        review["score"]
+        for review in reviews
+    ]
 
     best_score = max(scores)
 
@@ -102,9 +112,13 @@ def get_dashboard(email):
 
             severity = issue["severity"]
 
-            issue_counter[rule] = issue_counter.get(rule, 0) + 1
+            issue_counter[rule] = (
+                issue_counter.get(rule, 0) + 1
+            )
 
-            severity_counter[severity] = severity_counter.get(severity, 0) + 1
+            severity_counter[severity] = (
+                severity_counter.get(severity, 0) + 1
+            )
 
     most_common_issue = None
 
@@ -122,10 +136,12 @@ def get_dashboard(email):
     for review in reviews:
 
         score_history.append(
+
             {
                 "timestamp": review["timestamp"],
                 "score": review["score"]
             }
+
         )
 
     recent_reviews = []
@@ -133,11 +149,13 @@ def get_dashboard(email):
     for review in reviews[-5:]:
 
         recent_reviews.append(
+
             {
                 "timestamp": review["timestamp"],
                 "status": review["status"],
                 "score": review["score"]
             }
+
         )
 
     return {

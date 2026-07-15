@@ -1,76 +1,101 @@
 import json
+from datetime import datetime
 
-from database.database import get_connection
+from sqlalchemy.orm import Session
+
+from database.session import SessionLocal
+from database.models import Review
+
 from app.services.user_service import get_user_by_email
 
 
 def save_review(email, report):
 
-    user = get_user_by_email(email)
+    db: Session = SessionLocal()
 
-    if user is None:
-        return
+    try:
 
-    user_id = user[0]
+        user = get_user_by_email(email)
 
-    connection = get_connection()
-    cursor = connection.cursor()
+        if user is None:
+            return
 
-    cursor.execute(
-        """
-        INSERT INTO reviews
-        (user_id, timestamp, status, score, review)
+        review = Review(
 
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        (
-            user_id,
-            report["timestamp"],
-            report["status"],
-            report["score"],
-            json.dumps(report)
+            user_id=user.id,
+
+            timestamp=datetime.now().isoformat(),
+
+            status=report["status"],
+
+            score=report["score"],
+
+            review=json.dumps(report)
+
         )
-    )
 
-    connection.commit()
-    connection.close()
+        db.add(review)
+
+        db.commit()
+
+    finally:
+
+        db.close()
 
 
 def get_history(email):
 
-    user = get_user_by_email(email)
+    db: Session = SessionLocal()
 
-    if user is None:
-        return []
+    try:
 
-    user_id = user[0]
+        user = get_user_by_email(email)
 
-    connection = get_connection()
-    cursor = connection.cursor()
+        if user is None:
+            return []
 
-    cursor.execute(
-        """
-        SELECT timestamp, review
-        FROM reviews
-        WHERE user_id=?
-        ORDER BY id DESC
-        """,
-        (user_id,)
-    )
+        reviews = (
 
-    rows = cursor.fetchall()
+            db.query(Review)
 
-    connection.close()
+            .filter(
 
-    history = []
+                Review.user_id == user.id
 
-    for row in rows:
+            )
 
-        history.append(
-            {
-                "timestamp": row[0],
-                "review": json.loads(row[1])
-            }
+            .order_by(
+
+                Review.id.desc()
+
+            )
+
+            .all()
+
         )
 
-    return history
+        history = []
+
+        for review in reviews:
+
+            history.append(
+
+                {
+
+                    "timestamp": review.timestamp,
+
+                    "review": json.loads(
+
+                        review.review
+
+                    )
+
+                }
+
+            )
+
+        return history
+
+    finally:
+
+        db.close()

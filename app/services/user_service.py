@@ -1,110 +1,108 @@
-from database.database import get_connection
-from app.services.security_service import hash_password
-from app.services.security_service import verify_password
-from app.services.jwt_service import create_access_token
+from sqlalchemy.orm import Session
+
+from database.models import User
+from database.session import SessionLocal
+
+from app.services.security_service import (
+    hash_password,
+    verify_password
+)
+
+from app.services.jwt_service import (
+    create_access_token
+)
 
 
 def register_user(username, email, password):
 
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    hashed_password = hash_password(password)
+    db: Session = SessionLocal()
 
     try:
-        cursor.execute(
-            """
-            INSERT INTO users
-            (username, email, password)
-            VALUES (?, ?, ?)
-            """,
-            (
-                username,
-                email,
-                hashed_password
-            )
+
+        existing = db.query(User).filter(
+            User.email == email
+        ).first()
+
+        if existing:
+
+            return {
+                "message": "Email already exists."
+            }
+
+        new_user = User(
+            username=username,
+            email=email,
+            password=hash_password(password)
         )
 
-        connection.commit()
+        db.add(new_user)
+
+        db.commit()
 
         return {
             "message": "User registered successfully."
         }
 
-    except Exception:
-        return {
-            "message": "Email already exists."
-        }
-
     finally:
-        connection.close()
+
+        db.close()
 
 
 def login_user(email, password):
 
-    connection = get_connection()
+    db: Session = SessionLocal()
 
-    cursor = connection.cursor()
+    try:
 
-    cursor.execute(
-        """
-        SELECT email, password
-        FROM users
-        WHERE email=?
-        """,
-        (email,)
-    )
+        user = db.query(User).filter(
+            User.email == email
+        ).first()
 
-    user = cursor.fetchone()
+        if user is None:
 
-    connection.close()
+            return {
+                "message": "Invalid email or password."
+            }
 
-    if user is None:
+        if not verify_password(
+            password,
+            user.password
+        ):
 
-        return {
-            "message": "Invalid email or password."
-        }
+            return {
+                "message": "Invalid email or password."
+            }
 
-    stored_email = user[0]
-    stored_password = user[1]
-
-    if not verify_password(
-        password,
-        stored_password
-    ):
+        token = create_access_token(
+            {
+                "sub": user.email
+            }
+        )
 
         return {
-            "message": "Invalid email or password."
+
+            "access_token": token,
+
+            "token_type": "bearer"
+
         }
 
-    token = create_access_token(
-        {
-            "sub": stored_email
-        }
-    )
+    finally:
 
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+        db.close()
+        
+from database.session import SessionLocal
+from database.models import User
 
 
 def get_user_by_email(email):
 
-    connection = get_connection()
-    cursor = connection.cursor()
+    db = SessionLocal()
 
-    cursor.execute(
-        """
-        SELECT id, username, email
-        FROM users
-        WHERE email=?
-        """,
-        (email,)
-    )
+    try:
+        return db.query(User).filter(
+            User.email == email
+        ).first()
 
-    user = cursor.fetchone()
-
-    connection.close()
-
-    return user
+    finally:
+        db.close()
