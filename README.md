@@ -469,3 +469,4 @@ Building CortexPilot to learn:
 - SQLAlchemy & PostgreSQL
 - Production Software Architecture
 - Cloud Deployment
+- done
