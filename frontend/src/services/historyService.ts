@@ -14,6 +14,8 @@ export interface HistoryItem {
     summary: {
       language: string;
       total_lines: number;
+      blank_lines: number;
+      characters: number;
     };
   };
 }

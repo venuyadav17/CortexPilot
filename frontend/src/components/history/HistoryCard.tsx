@@ -1,17 +1,4 @@
-interface HistoryItem {
-  timestamp: string;
-  review: {
-    status: string;
-    score: number;
-    total_issues: number;
-    summary: {
-      language: string;
-      total_lines: number;
-      blank_lines: number;
-      characters: number;
-    };
-  };
-}
+import type { HistoryItem } from "../../services/historyService";
 
 interface Props {
   item: HistoryItem;

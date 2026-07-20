@@ -12,27 +12,7 @@ import Export from "./pages/Export";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 
-// Temporary placeholders for upcoming phases
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-8">
-    <div className="w-full max-w-lg rounded-3xl border border-zinc-800 bg-zinc-900/50 p-10 text-center backdrop-blur-xl">
-      <h1 className="text-3xl font-bold text-white">
-        {title}
-      </h1>
 
-      <p className="mt-4 text-zinc-400">
-        This module will be implemented in the upcoming phase of CortexPilot.
-      </p>
-
-      <a
-        href="/dashboard"
-        className="mt-8 inline-flex rounded-xl bg-violet-600 px-6 py-3 font-medium text-white transition hover:bg-violet-500"
-      >
-        Back to Dashboard
-      </a>
-    </div>
-  </div>
-);
 
 function App() {
   return (
