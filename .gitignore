@@ -32,3 +32,46 @@ exports/
 
 # mypy
 .mypy_cache/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Node.js
+node_modules/
+dist/
+
+# Virtual Environment
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Environment Variables
+.env
+.env.docker
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Uploaded Files
+uploads/
+
+# Exported Files
+exports/
+
+# SQLite
+*.db
+
+# macOS
+.DS_Store
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
